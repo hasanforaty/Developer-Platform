@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Flag Management - Developer Platform</title>
+    <link rel="stylesheet" href="/css/feature-flags.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🚩 Feature Flag Management</h1>
+                <p class="subtitle">Control feature rollouts with precision</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="showCreateFeatureModal()">
+                    ➕ New Feature
+                </button>
+                <button class="btn btn-secondary" onclick="refreshDashboard()">
+                    🔄 Refresh
+                </button>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('features')">Features</button>
+            <button class="tab-btn" onclick="switchTab('evaluations')">Evaluations</button>
+            <button class="tab-btn" onclick="switchTab('audit')">Audit Logs</button>
+        </div>
+
+        <!-- Features Tab -->
+        <div class="tab-content" id="features-tab">
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="card summary-card">
+                    <div class="card-icon">📊</div>
+                    <div class="card-content">
+                        <h3 id="total-features">0</h3>
+                        <p>Total Features</p>
+                    </div>
+                </div>
+                <div class="card summary-card success">
+                    <div class="card-icon">✅</div>
+                    <div class="card-content">
+                        <h3 id="enabled-features">0</h3>
+                        <p>Enabled</p>
+                    </div>
+                </div>
+                <div class="card summary-card info">
+                    <div class="card-icon">📏</div>
+                    <div class="card-content">
+                        <h3 id="total-rules">0</h3>
+                        <p>Total Rules</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="feature-search" placeholder="Search features..." onkeyup="filterFeatures()">
+            </div>
+
+            <!-- Features List -->
+            <div id="features-list" class="features-grid">
+                <!-- Features will be loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="features-empty" style="display: none;">
+                <div class="empty-icon">🏳️</div>
+                <h2>No Features Found</h2>
+                <p>Create your first feature flag to get started</p>
+                <button class="btn btn-primary" onclick="showCreateFeatureModal()">Create Feature</button>
+            </div>
+        </div>
+
+        <!-- Evaluations Tab -->
+        <div class="tab-content" id="evaluations-tab" style="display: none;">
+            <div class="card">
+                <h2>Evaluation Statistics</h2>
+                <div id="evaluation-stats">
+                    <p class="text-muted">Select a feature to view evaluation statistics</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audit Tab -->
+        <div class="tab-content" id="audit-tab" style="display: none;">
+            <div class="card">
+                <h2>Audit Logs</h2>
+                <div class="table-container">
+                    <table class="audit-table" id="audit-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Feature</th>
+                                <th>Action</th>
+                                <th>Changed By</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody id="audit-tbody">
+                            <!-- Audit logs will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Create/Edit Feature Modal -->
+    <div class="modal" id="feature-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="feature-modal-title">Create Feature Flag</h2>
+                <span class="close" onclick="closeFeatureModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="feature-form" onsubmit="saveFeature(event)">
+                    <input type="hidden" id="feature-id">
+
+                    <div class="form-group">
+                        <label for="feature-key">Feature Key *</label>
+                        <input type="text" id="feature-key" required pattern="[a-z0-9_-]+"
+                               placeholder="e.g., new_checkout_flow"
+                               title="Only lowercase letters, numbers, hyphens, and underscores">
+                        <small>Unique identifier for this feature (lowercase, numbers, hyphens, underscores)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feature-name">Feature Name *</label>
+                        <input type="text" id="feature-name" required placeholder="e.g., New Checkout Flow">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feature-description">Description</label>
+                        <textarea id="feature-description" rows="3" placeholder="Describe what this feature controls"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="feature-enabled">
+                            <span>Enable this feature</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feature-created-by">Created By</label>
+                        <input type="text" id="feature-created-by" placeholder="Your name or email">
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeFeatureModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Feature</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rules Modal -->
+    <div class="modal" id="rules-modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="rules-modal-title">Manage Rules</h2>
+                <span class="close" onclick="closeRulesModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <button class="btn btn-primary btn-sm" onclick="showAddRuleForm()">➕ Add Rule</button>
+
+                <div id="add-rule-form" style="display: none;" class="form-card">
+                    <h3>Add New Rule</h3>
+                    <form onsubmit="saveRule(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="rule-name">Rule Name *</label>
+                                <input type="text" id="rule-name" required placeholder="e.g., Production Rollout 50%">
+                            </div>
+                            <div class="form-group">
+                                <label for="rule-environment">Environment *</label>
+                                <select id="rule-environment" required>
+                                    <option value="development">Development</option>
+                                    <option value="staging">Staging</option>
+                                    <option value="production" selected>Production</option>
+                                    <option value="test">Test</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="rule-rollout">Rollout Percentage *</label>
+                                <input type="number" id="rule-rollout" required min="0" max="100" value="100">
+                                <small>Percentage of users who will see this feature (0-100)</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="rule-priority">Priority</label>
+                                <input type="number" id="rule-priority" value="0" min="0">
+                                <small>Higher priority rules are evaluated first</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="rule-enabled" checked>
+                                <span>Enable this rule</span>
+                            </label>
+                        </div>
+
+                        <div class="modal-actions">
+                            <button type="button" class="btn btn-secondary" onclick="hideAddRuleForm()">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Add Rule</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="rules-list" class="rules-list">
+                    <!-- Rules will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="/js/feature-flags.js"></script>
+</body>
+</html>
