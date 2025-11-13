@@ -37,10 +37,8 @@ Journal/
 | 0 | 0.1 | [Project Initialization](Phase-0/0.1-project-initialization.md) | ✅ Complete | 2025-11-13 |
 | 0 | 0.2 | [Environment Setup](Phase-0/0.2-environment-setup.md) | ✅ Complete | 2025-11-13 |
 | 0 | 0.3 | [Database Initialization](Phase-0/0.3-database-initialization.md) | ✅ Complete | 2025-11-13 |
-| 1 | 1.1 | Service Registry Domain Model | 🚧 Pending | - |
-| 1 | 1.2 | Service Registration API | 🚧 Pending | - |
-| 1 | 1.3 | Health Check Mechanism | 🚧 Pending | - |
-| 1 | 1.4 | Service Dashboard UI | 🚧 Pending | - |
+| 1 | 1.1-1.5 | [Service Registry & Health Monitoring](Phase-1/phase-1-summary.md) | ✅ Complete | 2025-11-13 |
+| 2 | 2.1 | Log Data Model | 🚧 In Progress | - |
 
 ## How to Use This Journal
 
