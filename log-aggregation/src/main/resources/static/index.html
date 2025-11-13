@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Viewer - Developer Platform</title>
+    <link rel="stylesheet" href="/css/logs.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>📋 Log Aggregation</h1>
+                <p class="subtitle">Centralized Log Viewer</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="refreshLogs()">
+                    <span id="refresh-icon">🔄</span> Refresh
+                </button>
+                <button class="btn btn-secondary" onclick="clearFilters()">
+                    🗑️ Clear Filters
+                </button>
+            </div>
+        </header>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards" id="summary-cards">
+            <div class="card summary-card">
+                <div class="card-icon">📊</div>
+                <div class="card-content">
+                    <h3 id="total-logs">0</h3>
+                    <p>Total Logs</p>
+                </div>
+            </div>
+            <div class="card summary-card danger">
+                <div class="card-icon">❌</div>
+                <div class="card-content">
+                    <h3 id="error-logs">0</h3>
+                    <p>Errors</p>
+                </div>
+            </div>
+            <div class="card summary-card warning">
+                <div class="card-icon">⚠️</div>
+                <div class="card-content">
+                    <h3 id="warn-logs">0</h3>
+                    <p>Warnings</p>
+                </div>
+            </div>
+            <div class="card summary-card info">
+                <div class="card-icon">ℹ️</div>
+                <div class="card-content">
+                    <h3 id="info-logs">0</h3>
+                    <p>Info</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filter-group">
+                <label for="service-filter">Service:</label>
+                <select id="service-filter" onchange="applyFilters()">
+                    <option value="">All Services</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="level-filter">Level:</label>
+                <select id="level-filter" onchange="applyFilters()">
+                    <option value="">All Levels</option>
+                    <option value="ERROR">ERROR</option>
+                    <option value="WARN">WARN</option>
+                    <option value="INFO">INFO</option>
+                    <option value="DEBUG">DEBUG</option>
+                    <option value="TRACE">TRACE</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="search-text">Search:</label>
+                <input type="text" id="search-text" placeholder="Search in messages..." onkeyup="handleSearchKeyup(event)">
+            </div>
+            <div class="filter-group">
+                <label for="trace-id">Trace ID:</label>
+                <input type="text" id="trace-id" placeholder="Trace ID..." onkeyup="handleSearchKeyup(event)">
+            </div>
+        </div>
+
+        <!-- Logs Table -->
+        <div class="logs-section">
+            <div class="logs-table-container">
+                <table class="logs-table" id="logs-table">
+                    <thead>
+                        <tr>
+                            <th width="180px">Timestamp</th>
+                            <th width="120px">Service</th>
+                            <th width="80px">Level</th>
+                            <th>Message</th>
+                            <th width="100px">Trace ID</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-tbody">
+                        <!-- Logs will be dynamically loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <button class="btn btn-secondary" onclick="previousPage()" id="prev-btn">Previous</button>
+                <span id="page-info">Page 1 of 1</span>
+                <button class="btn btn-secondary" onclick="nextPage()" id="next-btn">Next</button>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Loading logs...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="empty-state" style="display: none;">
+            <div class="empty-icon">📭</div>
+            <h2>No Logs Found</h2>
+            <p>Try adjusting your filters or check back later</p>
+        </div>
+    </div>
+
+    <!-- Modal for Log Details -->
+    <div class="modal" id="log-details-modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Log Details</h2>
+                <span class="close" onclick="closeLogDetailsModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="log-details-content">
+                <!-- Log details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="/js/logs.js"></script>
+</body>
+</html>

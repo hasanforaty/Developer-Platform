@@ -38,7 +38,7 @@ Journal/
 | 0 | 0.2 | [Environment Setup](Phase-0/0.2-environment-setup.md) | ✅ Complete | 2025-11-13 |
 | 0 | 0.3 | [Database Initialization](Phase-0/0.3-database-initialization.md) | ✅ Complete | 2025-11-13 |
 | 1 | 1.1-1.5 | [Service Registry & Health Monitoring](Phase-1/phase-1-summary.md) | ✅ Complete | 2025-11-13 |
-| 2 | 2.1 | Log Data Model | 🚧 In Progress | - |
+| 2 | 2.1-2.5 | [Centralized Log Aggregation](Phase-2/phase-2-summary.md) | ✅ Complete | 2025-11-13 |
 
 ## How to Use This Journal
 
