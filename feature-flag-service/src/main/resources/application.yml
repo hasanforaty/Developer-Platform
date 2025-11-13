@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: feature-flag-service
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:devplatform}
+    username: ${DB_USER:devplatform}
+    password: ${DB_PASSWORD:devplatform123}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 300000 # 5 minutes
+
+server:
+  port: 8083
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+
+logging:
+  level:
+    root: INFO
+    com.devplatform: DEBUG
+
+# Feature Flag specific configuration
+feature-flags:
+  cache:
+    ttl: 5m
+    refresh-interval: 1m
+  evaluation:
+    default-enabled: false

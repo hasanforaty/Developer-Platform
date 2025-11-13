@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: ab-testing-service
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:devplatform}
+    username: ${DB_USER:devplatform}
+    password: ${DB_PASSWORD:devplatform123}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+server:
+  port: 8085
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+
+logging:
+  level:
+    root: INFO
+    com.devplatform: DEBUG
+
+# A/B Testing specific configuration
+ab-testing:
+  assignment:
+    cache-ttl: 24h
+    hash-algorithm: MurmurHash3
+  analysis:
+    confidence-level: 0.95
+    min-sample-size: 100
